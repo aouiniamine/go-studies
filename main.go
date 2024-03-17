@@ -18,6 +18,8 @@ func main() {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() { // set up a go routine
+		// newMux := http.ServeMux()
+		// newMux.HandleFunc("")
 		mux := http.NewServeMux() // set a http handler
 		mux.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(r.Method)
@@ -38,7 +40,7 @@ func main() {
 			// io.WriteString(w, res)
 		})
 
-		// mux.
+		// mux.ServeHTTP()
 
 		for { // making graceful shutdown to server
 			if err := http.ListenAndServe(":8080", mux); err != nil {
