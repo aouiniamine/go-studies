@@ -43,7 +43,8 @@ func main() {
 		// mux.ServeHTTP()
 
 		for { // making graceful shutdown to server
-			if err := http.ListenAndServe(":8080", mux); err != nil {
+			// adding localhost or network ip addr will prevent windows err from thinking it's a malware
+			if err := http.ListenAndServe("localhost:8080", mux); err != nil {
 				fmt.Println("Server error:", err)
 				wg.Done() // if error accurs close server & print error
 
