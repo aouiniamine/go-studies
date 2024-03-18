@@ -11,6 +11,7 @@ type Res struct {
 	// 1. responding with struct first letter has to capital or it'll return empty
 	Response string `json:"response"`
 	// to change key name set `json:"<your-custom-name>"`
+	Context string `json:context`
 }
 
 func main() {
@@ -40,7 +41,19 @@ func main() {
 			// io.WriteString(w, res)
 		})
 
-		// mux.ServeHTTP()
+		mux.HandleFunc("GET /new/http/handle", func(w http.ResponseWriter, r *http.Request) {
+			// with new golang version you can add method before the path
+			// there won't by any method handling boiler plate anymore
+
+			res := Res{
+				Response: `No boiler plate needed for method hadling anymore`,
+				Context:  "Golang:V1.22.1 (and up)",
+			}
+			jasonRes, _ := json.Marshal(res)
+			w.Write(jasonRes)
+			// res := []byte("new get handling with net http!!")
+			// w.Write(res)
+		})
 
 		for { // making graceful shutdown to server
 			// adding localhost or network ip addr will prevent windows err from thinking it's a malware
