@@ -11,7 +11,17 @@ type Res struct {
 	// 1. responding with struct first letter has to capital or it'll return empty
 	Response string `json:"response"`
 	// to change key name set `json:"<your-custom-name>"`
-	Context string `json:context`
+	Context string `json:"context"`
+}
+
+type Body struct {
+	Name  string  `json:"name"`
+	Price float32 `json:"price"`
+}
+
+type Res1 struct { // inheritce body struct
+	Body
+	Context string `json:"context"`
 }
 
 func main() {
@@ -53,6 +63,30 @@ func main() {
 			w.Write(jasonRes)
 			// res := []byte("new get handling with net http!!")
 			// w.Write(res)
+		})
+
+		mux.HandleFunc("GET /new/path/{id}", func(w http.ResponseWriter, r *http.Request) {
+			id := r.PathValue("id")
+			res := Res{
+				Response: `Getting with id: ` + id,
+				Context:  "Golang:V1.22.1 (and up)",
+			}
+			jsonRes, _ := json.Marshal(res)
+			w.Write(jsonRes)
+		})
+
+		mux.HandleFunc("POST /save", func(w http.ResponseWriter, r *http.Request) {
+			decoder := json.NewDecoder(r.Body)
+			var body Body
+			err := decoder.Decode(&body)
+			if err != nil {
+				panic(err)
+			}
+
+			res := Res1{Body: body, Context: "hadling body in golang"}
+			jsonRes, _ := json.Marshal(res)
+
+			w.Write(jsonRes)
 		})
 
 		for { // making graceful shutdown to server
